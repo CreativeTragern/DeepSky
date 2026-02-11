@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSky — Досліджуй Всесвіт</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:'Inter',sans-serif;
+    background:#05070d;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* LOADER */
+#loader{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:#000814;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+.loader-text{
+    font-family:'Orbitron',sans-serif;
+    font-size:26px;
+    letter-spacing:4px;
+    animation:blink 1.5s infinite;
+}
+@keyframes blink{50%{opacity:0.3}}
+
+/* FADE IN AFTER LOAD */
+.fade-in{
+    opacity:0;
+    transform:translateY(20px);
+    transition:1s ease;
+}
+.fade-in.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Stars */
+#stars{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:-2;
+}
+
+/* NAV */
+nav{
+    position:fixed;
+    width:100%;
+    top:0;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    backdrop-filter:blur(10px);
+    background:rgba(0,0,0,0.4);
+    z-index:1000;
+}
+.logo{
+    font-family:'Orbitron',sans-serif;
+    color:#00d9ff;
+}
+nav ul{
+    display:flex;
+    gap:20px;
+    list-style:none;
+}
+nav a{
+    text-decoration:none;
+    color:white;
+    font-size:14px;
+    position:relative;
+}
+nav a::after{
+    content:"";
+    position:absolute;
+    width:0;
+    height:2px;
+    bottom:-4px;
+    left:0;
+    background:#00d9ff;
+    transition:0.3s;
+}
+nav a:hover::after{width:100%}
+
+/* HERO */
+.hero{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    position:relative;
+    padding:20px;
+}
+.hero video{
+    position:absolute;
+    top:50%;
+    left:50%;
+    min-width:100%;
+    min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover;
+    opacity:0.35;
+    z-index:-1;
+}
+.hero h1{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(30px,6vw,60px);
+    background:linear-gradient(90deg,#00d9ff,#8f00ff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+.hero p{margin-top:15px;opacity:0.8}
+.hero button{
+    margin-top:25px;
+    padding:12px 28px;
+    border:none;
+    border-radius:50px;
+    background:linear-gradient(90deg,#00d9ff,#8f00ff);
+    color:white;
+    cursor:pointer;
+}
+
+/* INFO STRIP */
+.info-strip{
+    padding:40px 5%;
+    text-align:center;
+    background:linear-gradient(90deg,rgba(0,217,255,0.1),rgba(143,0,255,0.1));
+    font-size:14px;
+    letter-spacing:1px;
+}
+
+/* SECTIONS */
+.sections{
+    padding:100px 5%;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:30px;
+}
+.card{
+    background:rgba(255,255,255,0.05);
+    padding:30px;
+    border-radius:15px;
+    border:1px solid rgba(255,255,255,0.1);
+    transition:0.4s;
+    cursor:pointer;
+}
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 20px rgba(0,217,255,0.4);
+}
+.card h3{color:#00d9ff;margin-bottom:10px}
+
+/* FOOTER */
+footer{
+    padding:40px 5%;
+    background:rgba(0,0,0,0.4);
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+    font-size:14px;
+}
+footer h4{margin-bottom:10px;color:#00d9ff}
+footer a{
+    display:block;
+    text-decoration:none;
+    color:white;
+    opacity:0.7;
+    margin-bottom:5px;
+}
+footer a:hover{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="loader">
+<div class="loader-text">DEEPSKY LOADING</div>
+</div>
+
+<canvas id="stars"></canvas>
+
+<nav class="fade-in">
+<div class="logo">DeepSky</div>
+<ul>
+<li><a href="planets.html" target="_blank">Планети</a></li>
+<li><a href="blackholes.html" target="_blank">Чорні діри</a></li>
+<li><a href="events.html" target="_blank">Астроподії</a></li>
+<li><a href="missions.html" target="_blank">Місії</a></li>
+</ul>
+</nav>
+
+<section class="hero fade-in">
+<video autoplay muted loop>
+<source src="https://cdn.coverr.co/videos/coverr-earth-from-space-5176/1080p.mp4" type="video/mp4">
+</video>
+<div>
+<h1>Досліджуй глибини Всесвіту</h1>
+<p>Сучасний космічний портал нового покоління</p>
+<button onclick="document.querySelector('.sections').scrollIntoView({behavior:'smooth'})">
+Почати дослідження
+</button>
+</div>
+</section>
+
+<div class="info-strip fade-in">
+LIVE DATA • SOLAR ACTIVITY • COSMIC MISSIONS • DEEP SPACE SIGNALS
+</div>
+
+<section class="sections fade-in">
+
+<div class="card" onclick="window.open('planets.html','_blank')">
+<h3>Планети</h3>
+<p>Сонячна система та екзопланети</p>
+</div>
+
+<div class="card" onclick="window.open('blackholes.html','_blank')">
+<h3>Чорні діри</h3>
+<p>Горизонт подій</p>
+</div>
+
+<div class="card" onclick="window.open('events.html','_blank')">
+<h3>Астроподії</h3>
+<p>Затемнення та метеори</p>
+</div>
+
+<div class="card" onclick="window.open('missions.html','_blank')">
+<h3>Космічні місії</h3>
+<p>NASA та ESA</p>
+</div>
+
+<div class="card" onclick="window.open('signals.html','_blank')">
+<h3>Космічні сигнали</h3>
+<p>Загадкові імпульси</p>
+</div>
+
+<div class="card" onclick="window.open('observe.html','_blank')">
+<h3>Спостереження</h3>
+<p>Як дивитися на зорі</p>
+</div>
+
+</section>
+
+<footer>
+<div>
+<h4>DeepSky</h4>
+<p>Портал про дослідження Всесвіту.</p>
+</div>
+
+<div>
+<h4>Розділи</h4>
+<a href="planets.html" target="_blank">Планети</a>
+<a href="blackholes.html" target="_blank">Чорні діри</a>
+<a href="events.html" target="_blank">Астроподії</a>
+</div>
+
+<div>
+<h4>Контакти</h4>
+
+<a href="mailto:kotikigromanko@gmail.com">
+📧 kotikigromanko@gmail.com
+</a>
+
+<a href="https://t.me/creativetragern" target="_blank">
+💬 @creativetragern
+</a>
+
+<a href="https://github.com/CreativeTragern" target="_blank">
+🐙 CreativeTragern
+</a>
+
+</div>
+</footer>
+
+
+<script>
+/* LOADER */
+window.addEventListener("load",()=>{
+setTimeout(()=>{
+document.getElementById("loader").style.opacity="0";
+setTimeout(()=>{document.getElementById("loader").style.display="none"},500);
+document.querySelectorAll(".fade-in").forEach((el,i)=>{
+setTimeout(()=>{el.classList.add("show")},300*i);
+});
+},1500);
+});
+
+/* Stars */
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let stars=[];
+for(let i=0;i<200;i++){
+stars.push({x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*1.5,
+s:Math.random()*0.5});
+}
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="white";
+stars.forEach(star=>{
+ctx.beginPath();
+ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
+ctx.fill();
+star.y+=star.s;
+if(star.y>canvas.height){
+star.y=0;
+star.x=Math.random()*canvas.width;
+}
+});
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
