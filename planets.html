@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSky — Планети</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',sans-serif;background:#05070d;color:white}
+nav{position:fixed;width:100%;top:0;padding:15px 5%;display:flex;justify-content:space-between;background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);z-index:1000}
+nav .logo{font-family:'Orbitron',sans-serif;color:#00d9ff}
+nav ul{display:flex;gap:20px;list-style:none}
+nav a{text-decoration:none;color:white;font-size:14px}
+nav a:hover{color:#00d9ff}
+
+.hero{height:50vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;padding:20px}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(28px,6vw,50px);background:linear-gradient(90deg,#00d9ff,#8f00ff);-webkit-background-clip:text;color:transparent;margin-bottom:10px}
+.hero p{opacity:0.8;font-size:clamp(14px,3vw,18px)}
+
+.planets-container{padding:50px 5%;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px}
+.planet-card{background:rgba(255,255,255,0.05);padding:20px;border-radius:15px;backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:0.3s}
+.planet-card:hover{transform:translateY(-5px);box-shadow:0 0 20px rgba(0,217,255,0.4)}
+.planet-card img{width:100%;border-radius:10px;margin-bottom:15px}
+.planet-card h3{color:#00d9ff;margin-bottom:10px}
+.planet-card p{opacity:0.85;font-size:14px;line-height:1.5}
+
+/* Modal */
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;z-index:2000}
+.modal{background:rgba(10,10,20,0.95);padding:20px;border-radius:20px;max-width:450px;width:90%;text-align:center;position:relative;box-shadow:0 0 30px rgba(0,217,255,0.5)}
+.modal img{width:100%;border-radius:15px;margin-bottom:15px}
+.modal h2{color:#00d9ff;margin-bottom:10px}
+.modal p{opacity:0.85;line-height:1.5;margin-bottom:20px}
+.modal button.close-btn{position:absolute;top:10px;right:10px;padding:5px 10px;background:#ff0000;border:none;border-radius:50%;color:white;font-size:18px;cursor:pointer;}
+
+/* Footer */
+footer{padding:40px 5%;background:rgba(0,0,0,0.4);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;font-size:14px}
+footer h4{margin-bottom:10px;color:#00d9ff}
+footer a{display:block;text-decoration:none;color:white;opacity:0.7;margin-bottom:5px}
+footer a:hover{opacity:1}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="logo">DeepSky</div>
+<ul>
+<li><a href="index.html">Головна</a></li>
+<li><a href="blackholes.html">Чорні діри</a></li>
+<li><a href="events.html">Астроподії</a></li>
+</ul>
+</nav>
+
+<section class="hero">
+<h1>Планети Сонячної системи</h1>
+<p>Клацай на планету, щоб побачити деталі</p>
+</section>
+
+<section class="planets-container">
+
+<!-- Меркурій -->
+<div class="planet-card" data-name="Меркурій" data-img="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg" data-info="Найменша планета Сонячної системи. Температура: до 430°C вдень, до -180°C вночі. Атмосфера майже відсутня. Поверхня кратерована.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg" alt="Меркурій">
+<h3>Меркурій</h3>
+<p>Найменша планета, дуже гаряча та кратерована.</p>
+</div>
+
+<!-- Венера -->
+<div class="planet-card" data-name="Венера" data-img="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg" data-info="Друга планета від Сонця. Щільна атмосфера з CO₂, парниковий ефект. Поверхня вулканічна, температура ~462°C.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg" alt="Венера">
+<h3>Венера</h3>
+<p>Атмосфера щільна, з парниковим ефектом.</p>
+</div>
+
+<!-- Земля -->
+<div class="planet-card" data-name="Земля" data-img="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" data-info="Третя планета від Сонця. Атмосфера з азоту та кисню. Єдина відома планета з життям.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg" alt="Земля">
+<h3>Земля</h3>
+<p>Рідна планета з життям і водою.</p>
+</div>
+
+<!-- Марс -->
+<div class="planet-card" data-name="Марс" data-img="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" data-info="Червона планета. Полярні шапки CO₂ та H₂O. Атмосфера тонка.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg" alt="Марс">
+<h3>Марс</h3>
+<p>Тонка атмосфера, полярні шапки.</p>
+</div>
+
+<!-- Юпітер -->
+<div class="planet-card" data-name="Юпітер" data-img="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg" data-info="Газовий гігант. Велика Червона Пляма – гігантський шторм. 79 супутників. Атмосфера з H₂ та He.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg" alt="Юпітер">
+<h3>Юпітер</h3>
+<p>Найбільша планета, газовий гігант.</p>
+</div>
+
+<!-- Сатурн -->
+<div class="planet-card" data-name="Сатурн" data-img="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" data-info="Газовий гігант з величезними кільцями з льоду та пилу. Понад 80 супутників. Температура ~-139°C.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" alt="Сатурн">
+<h3>Сатурн</h3>
+<p>Відомий кільцями, газовий гігант.</p>
+</div>
+
+<!-- Уран -->
+<div class="planet-card" data-name="Уран" data-img="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" data-info="Газовий гігант, обертається “лежачи на боці”. Атмосфера: H₂, He, метан. Має 27 супутників. Температура: -197°C.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg" alt="Уран">
+<h3>Уран</h3>
+<p>Газовий гігант, обертається на боці, блакитний.</p>
+</div>
+
+<!-- Нептун -->
+<div class="planet-card" data-name="Нептун" data-img="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" data-info="Газовий гігант синього кольору. 14 супутників. Атмосфера з H₂, He та метану. Вітри до 2,100 км/год. Температура: -201°C.">
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" alt="Нептун">
+<h3>Нептун</h3>
+<p>Синя планета, газовий гігант з сильними вітрами.</p>
+</div>
+
+</section>
+
+<!-- Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button onclick="closeModal()" class="close-btn">✖</button>
+    <img id="modal-img" src="" alt="">
+    <h2 id="modal-title"></h2>
+    <p id="modal-info"></p>
+  </div>
+</div>
+
+<footer>
+<div>
+<h4>DeepSky</h4>
+<p>Портал про дослідження Всесвіту.</p>
+</div>
+<div>
+<h4>Розділи</h4>
+<a href="index.html">Головна</a>
+<a href="blackholes.html">Чорні діри</a>
+<a href="events.html">Астроподії</a>
+</div>
+<div>
+<h4>Контакти</h4>
+<a href="mailto:kotikigromanko@gmail.com">📧 kotikigromanko@gmail.com</a>
+<a href="https://t.me/creativetragern" target="_blank">💬 @creativetragern</a>
+<a href="https://github.com/CreativeTragern" target="_blank">🐙 CreativeTragern</a>
+</div>
+</footer>
+
+<script>
+const cards = document.querySelectorAll('.planet-card');
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalInfo = document.getElementById('modal-info');
+const modalImg = document.getElementById('modal-img');
+
+cards.forEach(card=>{
+    card.addEventListener('click', ()=>{
+        modalTitle.textContent = card.dataset.name;
+        modalInfo.textContent = card.dataset.info;
+        modalImg.src = card.dataset.img;
+        modal.style.display = 'flex';
+    });
+});
+
+function closeModal(){ 
+    modal.style.display='none'; 
+}
+</script>
+
+</body>
+</html>
