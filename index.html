@@ -1,330 +1,330 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeepSky — Досліджуй Всесвіт</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Сонячна система</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#000;
+      color:#e0f0ff;
+      font-family:'Segoe UI', system-ui, sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    .stars {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="1" fill="white" opacity="0.7"/></svg>') repeat,
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="30" cy="40" r="0.8" fill="white" opacity="0.4"/></svg>') repeat;
+      animation:drift 240s linear infinite;
+      opacity:0.85;
+    }
+    @keyframes drift { from {background-position:0 0, 0 0;} to {background-position:120px 120px, 200px 200px;} }
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    header {
+      text-align:center;
+      padding:60px 20px 20px;
+      position:relative;
+      z-index:2;
+    }
+    h1 {
+      font-size:3.6rem;
+      background:linear-gradient(90deg, #a0d8ff, #ffffff, #d4aaff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow:0 0 40px rgba(160,220,255,0.5);
+      margin-bottom:8px;
+    }
+    .subtitle { font-size:1.2rem; opacity:0.75; margin-bottom:30px; }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-    font-family:'Inter',sans-serif;
-    background:#05070d;
-    color:white;
-    overflow-x:hidden;
-}
+    /* Вкладки/розділи вгорі */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 0 auto 50px;
+      max-width: 600px;
+    }
+    .tab {
+      flex: 1;
+      padding: 18px 30px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: center;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(20, 40, 80, 0.5);
+      border: 1px solid rgba(100, 160, 255, 0.3);
+      color: #a0d8ff;
+    }
+    .tab.planets {
+      background: linear-gradient(135deg, rgba(0, 120, 255, 0.25), rgba(0, 80, 180, 0.15));
+    }
+    .tab.blackholes {
+      background: linear-gradient(135deg, rgba(180, 80, 255, 0.25), rgba(120, 40, 180, 0.15));
+      border-color: rgba(200, 100, 255, 0.4);
+      color: #d0a0ff;
+    }
+    .tab:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    }
+    .tab.blackholes:hover {
+      box-shadow: 0 12px 30px rgba(120,60,200,0.4);
+    }
 
-/* LOADER */
-#loader{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:#000814;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-.loader-text{
-    font-family:'Orbitron',sans-serif;
-    font-size:26px;
-    letter-spacing:4px;
-    animation:blink 1.5s infinite;
-}
-@keyframes blink{50%{opacity:0.3}}
+    .section { padding:40px 20px; }
+    .section h2 { text-align:center; font-size:2.8rem; margin-bottom:40px; color:#a0d8ff; }
+    .container {
+      max-width:1280px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+      gap:24px;
+    }
+    .planet-card {
+      background:rgba(12,20,40,0.65);
+      backdrop-filter:blur(10px);
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(100,160,255,0.2);
+      transition:all 0.35s ease;
+      cursor:pointer;
+      transform:translateY(20px);
+      opacity:0;
+    }
+    .planet-card.appear { transform:translateY(0); opacity:1; }
+    .planet-card:hover {
+      transform:translateY(-10px) scale(1.03);
+      box-shadow:0 25px 60px rgba(0,0,0,0.65), 0 0 50px rgba(80,140,255,0.3);
+    }
+    .img-container {
+      height:200px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .img-container::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 100%);
+    }
+    .content { padding:20px 22px; }
+    h3 { font-size:1.95rem; margin-bottom:10px; color:#d8e8ff; }
+    .type { font-size:1rem; opacity:0.7; margin-bottom:14px; font-style:italic; }
+    p { line-height:1.55; font-size:1.02rem; opacity:0.93; }
+    .extra { margin-top:12px; font-size:0.98rem; opacity:0.85; }
 
-/* FADE IN AFTER LOAD */
-.fade-in{
-    opacity:0;
-    transform:translateY(20px);
-    transition:1s ease;
-}
-.fade-in.show{
-    opacity:1;
-    transform:translateY(0);
-}
+    .modal {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.94);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .modal-content {
+      max-width:1100px;
+      width:100%;
+      border-radius:16px;
+      overflow:hidden;
+      position:relative;
+      max-height:92vh;
+      overflow-y:auto;
+      background:rgba(10,15,35,0.92);
+      border:1px solid rgba(120,180,255,0.3);
+    }
+    .modal-img {
+      width:100%;
+      height:340px;
+      background-size:cover;
+      background-position:center;
+    }
+    .modal-body { padding:28px 32px; }
+    .close {
+      position:absolute;
+      top:16px;
+      right:24px;
+      font-size:2.4rem;
+      color:white;
+      cursor:pointer;
+      opacity:0.8;
+    }
+    .close:hover { opacity:1; transform:scale(1.15); }
 
-/* Stars */
-#stars{
-    position:fixed;
-    width:100%;
-    height:100%;
-    z-index:-2;
-}
-
-/* NAV */
-nav{
-    position:fixed;
-    width:100%;
-    top:0;
-    padding:15px 5%;
-    display:flex;
-    justify-content:space-between;
-    backdrop-filter:blur(10px);
-    background:rgba(0,0,0,0.4);
-    z-index:1000;
-}
-.logo{
-    font-family:'Orbitron',sans-serif;
-    color:#00d9ff;
-}
-nav ul{
-    display:flex;
-    gap:20px;
-    list-style:none;
-}
-nav a{
-    text-decoration:none;
-    color:white;
-    font-size:14px;
-    position:relative;
-}
-nav a::after{
-    content:"";
-    position:absolute;
-    width:0;
-    height:2px;
-    bottom:-4px;
-    left:0;
-    background:#00d9ff;
-    transition:0.3s;
-}
-nav a:hover::after{width:100%}
-
-/* HERO */
-.hero{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    position:relative;
-    padding:20px;
-}
-.hero video{
-    position:absolute;
-    top:50%;
-    left:50%;
-    min-width:100%;
-    min-height:100%;
-    transform:translate(-50%,-50%);
-    object-fit:cover;
-    opacity:0.35;
-    z-index:-1;
-}
-.hero h1{
-    font-family:'Orbitron',sans-serif;
-    font-size:clamp(30px,6vw,60px);
-    background:linear-gradient(90deg,#00d9ff,#8f00ff);
-    -webkit-background-clip:text;
-    color:transparent;
-}
-.hero p{margin-top:15px;opacity:0.8}
-.hero button{
-    margin-top:25px;
-    padding:12px 28px;
-    border:none;
-    border-radius:50px;
-    background:linear-gradient(90deg,#00d9ff,#8f00ff);
-    color:white;
-    cursor:pointer;
-}
-
-/* INFO STRIP */
-.info-strip{
-    padding:40px 5%;
-    text-align:center;
-    background:linear-gradient(90deg,rgba(0,217,255,0.1),rgba(143,0,255,0.1));
-    font-size:14px;
-    letter-spacing:1px;
-}
-
-/* SECTIONS */
-.sections{
-    padding:100px 5%;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:30px;
-}
-.card{
-    background:rgba(255,255,255,0.05);
-    padding:30px;
-    border-radius:15px;
-    border:1px solid rgba(255,255,255,0.1);
-    transition:0.4s;
-    cursor:pointer;
-}
-.card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 0 20px rgba(0,217,255,0.4);
-}
-.card h3{color:#00d9ff;margin-bottom:10px}
-
-/* FOOTER */
-footer{
-    padding:40px 5%;
-    background:rgba(0,0,0,0.4);
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:20px;
-    font-size:14px;
-}
-footer h4{margin-bottom:10px;color:#00d9ff}
-footer a{
-    display:block;
-    text-decoration:none;
-    color:white;
-    opacity:0.7;
-    margin-bottom:5px;
-}
-footer a:hover{opacity:1}
-</style>
+    @media (max-width:700px) {
+      .tabs { flex-direction:column; gap:16px; }
+      .tab { font-size:1.3rem; padding:16px 24px; }
+      h1 { font-size:2.8rem; }
+      .modal-img { height:240px; }
+      .modal-body { padding:20px; }
+    }
+  </style>
 </head>
 <body>
+<div class="stars"></div>
 
-<div id="loader">
-<div class="loader-text">DEEPSKY LOADING</div>
+<header>
+  <h1>Сонячна система та Чорні діри</h1>
+  <div class="subtitle">Оберіть розділ або клікніть на планету</div>
+</header>
+
+<div class="tabs">
+  <div class="tab planets">Планети</div>
+  <a href="page1.html" class="tab blackholes">Чорні діри</a>
 </div>
 
-<canvas id="stars"></canvas>
+<div class="section">
+  <h2>Планети Сонячної системи</h2>
+  <div class="container planets">
+    <div class="planet-card" data-planet="mercury">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg');"></div>
+      <div class="content">
+        <h3>Меркурій</h3>
+        <div class="type">Скеляста планета</div>
+        <p>Найменша та найближча до Сонця планета. Екстремальні перепади температур: від +430 °C до -180 °C.</p>
+        <div class="extra">Рік — 88 земних днів, доба — 59 земних діб.</div>
+      </div>
+    </div>
 
-<nav class="fade-in">
-<div class="logo">DeepSky</div>
-<ul>
-<li><a href="planets.html" target="_blank">Планети</a></li>
-<li><a href="blackholes.html" target="_blank">Чорні діри</a></li>
-<li><a href="events.html" target="_blank">Астроподії</a></li>
-<li><a href="missions.html" target="_blank">Місії</a></li>
-</ul>
-</nav>
+    <div class="planet-card" data-planet="venus">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/0/08/Venus_from_Mariner_10.jpg');"></div>
+      <div class="content">
+        <h3>Венера</h3>
+        <div class="type">Скеляста планета</div>
+        <p>Найгарячіша планета завдяки парниковому ефекту. Тиск ≈ 92 земні атмосфери.</p>
+        <div class="extra">Обертається у зворотному напрямку.</div>
+      </div>
+    </div>
 
-<section class="hero fade-in">
-<video autoplay muted loop>
-<source src="https://cdn.coverr.co/videos/coverr-earth-from-space-5176/1080p.mp4" type="video/mp4">
-</video>
-<div>
-<h1>Досліджуй глибини Всесвіту</h1>
-<p>Сучасний космічний портал нового покоління</p>
-<button onclick="document.querySelector('.sections').scrollIntoView({behavior:'smooth'})">
-Почати дослідження
-</button>
+    <div class="planet-card" data-planet="earth">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/aa/NASA_Earth_America_2002.jpg');"></div>
+      <div class="content">
+        <h3>Земля</h3>
+        <div class="type">Скеляста планета · єдина з життям</div>
+        <p>Єдина планета з підтвердженим життям та рідкою водою на поверхні.</p>
+        <div class="extra">Має магнітне поле, яке захищає від сонячного вітру.</div>
+      </div>
+    </div>
+
+    <div class="planet-card" data-planet="mars">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/7/76/Mars_Hubble.jpg');"></div>
+      <div class="content">
+        <h3>Марс</h3>
+        <div class="type">Скеляста планета</div>
+        <p>Червона планета з Олімпом Монс — найбільшим вулканом Сонячної системи.</p>
+        <div class="extra">Два супутники — Фобос і Деймос.</div>
+      </div>
+    </div>
+
+    <div class="planet-card" data-planet="jupiter">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg');"></div>
+      <div class="content">
+        <h3>Юпітер</h3>
+        <div class="type">Газовий гігант</div>
+        <p>Найбільша планета. Велика Червона Пляма — шторм, який триває століттями.</p>
+        <div class="extra">95+ супутників (2025 рік).</div>
+      </div>
+    </div>
+
+    <div class="planet-card" data-planet="saturn">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/d/d4/Saturn_in_natural_colors_%28captured_by_the_Hubble_Space_Telescope%29.jpg');"></div>
+      <div class="content">
+        <h3>Сатурн</h3>
+        <div class="type">Газовий гігант</div>
+        <p>Відомий своєю системою кілець. Щільність менша за воду.</p>
+        <div class="extra">Понад 145 супутників, Титан — з озерами метану.</div>
+      </div>
+    </div>
+
+    <div class="planet-card" data-planet="uranus">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/b/bb/Uranus.jpg');"></div>
+      <div class="content">
+        <h3>Уран</h3>
+        <div class="type">Крижаний гігант</div>
+        <p>Практично лежить на боці (нахил осі 98°). Має слабкі кільця.</p>
+        <div class="extra">Названий на честь грецького бога неба.</div>
+      </div>
+    </div>
+
+    <div class="planet-card" data-planet="neptune">
+      <div class="img-container" style="background-image:url('https://museum-21.su/upload/iblock/224/khj492i9o2y9imizcjhnv9e9ne8feia0.jpg');"></div>
+      <div class="content">
+        <h3>Нептун</h3>
+        <div class="type">Крижаний гігант</div>
+        <p>Найшвидші вітри в Сонячній системі — до 2100 км/год.</p>
+        <div class="extra">Тритон обертається у зворотному напрямку.</div>
+      </div>
+    </div>
+  </div>
 </div>
-</section>
 
-<div class="info-strip fade-in">
-LIVE DATA • SOLAR ACTIVITY • COSMIC MISSIONS • DEEP SPACE SIGNALS
+<!-- Модалка -->
+<div class="modal" id="planetModal">
+  <div class="modal-content">
+    <span class="close" id="closePlanet">×</span>
+    <div class="modal-img" id="planetImg"></div>
+    <div class="modal-body">
+      <h2 id="planetTitle"></h2>
+      <div class="type" id="planetType"></div>
+      <p id="planetDesc"></p>
+      <div class="extra" id="planetExtra"></div>
+    </div>
+  </div>
 </div>
-
-<section class="sections fade-in">
-
-<div class="card" onclick="window.open('planets.html','_blank')">
-<h3>Планети</h3>
-<p>Сонячна система та екзопланети</p>
-</div>
-
-<div class="card" onclick="window.open('blackholes.html','_blank')">
-<h3>Чорні діри</h3>
-<p>Горизонт подій</p>
-</div>
-
-<div class="card" onclick="window.open('events.html','_blank')">
-<h3>Астроподії</h3>
-<p>Затемнення та метеори</p>
-</div>
-
-<div class="card" onclick="window.open('missions.html','_blank')">
-<h3>Космічні місії</h3>
-<p>NASA та ESA</p>
-</div>
-
-<div class="card" onclick="window.open('signals.html','_blank')">
-<h3>Космічні сигнали</h3>
-<p>Загадкові імпульси</p>
-</div>
-
-<div class="card" onclick="window.open('observe.html','_blank')">
-<h3>Спостереження</h3>
-<p>Як дивитися на зорі</p>
-</div>
-
-</section>
-
-<footer>
-<div>
-<h4>DeepSky</h4>
-<p>Портал про дослідження Всесвіту.</p>
-</div>
-
-<div>
-<h4>Розділи</h4>
-<a href="planets.html" target="_blank">Планети</a>
-<a href="blackholes.html" target="_blank">Чорні діри</a>
-<a href="events.html" target="_blank">Астроподії</a>
-</div>
-
-<div>
-<h4>Контакти</h4>
-
-<a href="mailto:kotikigromanko@gmail.com">
-📧 kotikigromanko@gmail.com
-</a>
-
-<a href="https://t.me/creativetragern" target="_blank">
-💬 @creativetragern
-</a>
-
-<a href="https://github.com/CreativeTragern" target="_blank">
-🐙 CreativeTragern
-</a>
-
-</div>
-</footer>
-
 
 <script>
-/* LOADER */
-window.addEventListener("load",()=>{
-setTimeout(()=>{
-document.getElementById("loader").style.opacity="0";
-setTimeout(()=>{document.getElementById("loader").style.display="none"},500);
-document.querySelectorAll(".fade-in").forEach((el,i)=>{
-setTimeout(()=>{el.classList.add("show")},300*i);
-});
-},1500);
+// Поява карток
+document.querySelectorAll('.planet-card').forEach((card, i) => {
+  setTimeout(() => card.classList.add('appear'), 200 + i * 140);
 });
 
-/* Stars */
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-let stars=[];
-for(let i=0;i<200;i++){
-stars.push({x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-r:Math.random()*1.5,
-s:Math.random()*0.5});
-}
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="white";
-stars.forEach(star=>{
-ctx.beginPath();
-ctx.arc(star.x,star.y,star.r,0,Math.PI*2);
-ctx.fill();
-star.y+=star.s;
-if(star.y>canvas.height){
-star.y=0;
-star.x=Math.random()*canvas.width;
-}
+// Розширені описи для модалки
+const planetDetails = {
+  mercury: { title:"Меркурій", type:"Скеляста планета", desc:"Найменша планета Сонячної системи (діаметр 4879 км). Через близькість до Сонця і тонку атмосферу (або її майже повну відсутність) денна сторона нагрівається до +430 °C, а нічна остигає до -180 °C. Поверхня вкрита кратерами, подібна до Місяця. Має слабке магнітне поле — несподіванка для такої маленької планети.", extra:"Рік = 88 земних днів\nДоба = 176 земних діб (2 меркуріанських роки!)\nНайбільший кратер — Басейн Жари (1550 км)\nШвидкість орбіти ~48 км/с" },
+  venus: { title:"Венера", type:"Скеляста планета", desc:"Друга планета від Сонця, розміром дуже схожа на Землю. Найгарячіша планета завдяки потужному парниковому ефекту (CO₂ 96,5%, тиск 92 атм). Температура поверхні стабільно ~+464 °C. Обертається у зворотному напрямку — Сонце сходить на заході.", extra:"Доба = 243 земні доби\nРік = 225 земних діб\nНайвища гора — Максвелл Монс (11 км)\nПонад 1600 вулканів\nМайже немає магнітного поля" },
+  earth: { title:"Земля", type:"Скеляста планета · єдина з життям", desc:"Єдина відома планета з рідкою водою на поверхні та біосферою. Активна тектоніка плит, потужне магнітне поле (завдяки рідкому ядру), атмосфера, що захищає від сонячного вітру та ультрафіолету.", extra:"71% поверхні — океани\nНайвища точка — Еверест (8848 м)\nНайглибша — Маріанська западина (~11 км)\nОдин великий супутник — Місяць" },
+  mars: { title:"Марс", type:"Скеляста планета", desc:"Червона планета через оксид заліза (іржу) на поверхні. Має найбільший вулкан Сонячної системи — Олімп Монс (висота 21,9 км). Колись мала річки, озера та, можливо, океан.", extra:"Два супутники — Фобос і Деймос (ймовірно захоплені астероїди)\nНайглибший каньйон — Долина Марінер (4000 км завдовжки)\nДоба майже як на Землі — 24 год 37 хв" },
+  jupiter: { title:"Юпітер", type:"Газовий гігант", desc:"Наймасивніша планета (318 мас Землі). Складається переважно з водню та гелію. Велика Червона Пляма — гігантський шторм, що триває сотні років. Потужне магнітне поле та радіаційні пояси.", extra:"95+ супутників (2025)\nНайцікавіші: Європа (підлідний океан), Ганімед (найбільший супутник), Іо (найактивніші вулкани)" },
+  saturn: { title:"Сатурн", type:"Газовий гігант", desc:"Відомий своєю ефектною системою кілець (складаються з льоду та пилу). Щільність менша за воду — теоретично плавав би у ванні. Має понад 145 супутників.", extra:"Найбільший супутник — Титан (густа атмосфера, озера метану)\nДоба = 10,7 годин\nКільця дуже тонкі — до 1 км товщиною" },
+  uranus: { title:"Уран", type:"Крижаний гігант", desc:"Лежить майже на боці (нахил осі 98°), тому пори року тривають по 42 роки. Має слабкі кільця та 27 відомих супутників.", extra:"Складається з води, аміаку та метану (крижаний)\nТемпература ~ -224 °C (найхолодніша планета)\nНазваний на честь грецького бога неба" },
+  neptune: { title:"Нептун", type:"Крижаний гігант", desc:"Найдальша від Сонця планета-гігант. Має найшвидші вітри в Сонячній системі (до 2100 км/год). Темно-синій колір через метан в атмосфері.", extra:"Найбільший супутник — Тритон (ретроградна орбіта, ймовірно захоплений)\nДоба ~16 годин\nДуже активна атмосфера — Темна пляма (шторм)" }
+};
+
+document.querySelectorAll('.planet-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const key = card.dataset.planet;
+    const detail = planetDetails[key];
+
+    const img = card.querySelector('.img-container').style.backgroundImage.slice(5,-2);
+
+    document.getElementById('planetImg').style.backgroundImage = `url('${img}')`;
+    document.getElementById('planetTitle').textContent = detail.title;
+    document.getElementById('planetType').textContent = detail.type;
+    document.getElementById('planetDesc').textContent = detail.desc;
+    document.getElementById('planetExtra').textContent = detail.extra;
+    
+    document.getElementById('planetModal').style.display = 'flex';
+  });
 });
-requestAnimationFrame(animate);
-}
-animate();
+
+document.getElementById('closePlanet').addEventListener('click', () => {
+  document.getElementById('planetModal').style.display = 'none';
+});
+document.getElementById('planetModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('planetModal')) {
+    document.getElementById('planetModal').style.display = 'none';
+  }
+});
 </script>
-
 </body>
 </html>
