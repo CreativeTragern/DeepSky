@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Чорні діри</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#000;
+      color:#e0f0ff;
+      font-family:'Segoe UI', system-ui, sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    .stars {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="10" cy="10" r="1" fill="white" opacity="0.7"/></svg>') repeat,
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="30" cy="40" r="0.8" fill="white" opacity="0.4"/></svg>') repeat;
+      animation:drift 240s linear infinite;
+      opacity:0.85;
+    }
+    @keyframes drift { from {background-position:0 0, 0 0;} to {background-position:120px 120px, 200px 200px;} }
+
+    header {
+      text-align:center;
+      padding:80px 20px 30px;
+      position:relative;
+      z-index:2;
+    }
+    h1 {
+      font-size:3.6rem;
+      background:linear-gradient(90deg, #d4aaff, #ffffff, #a020f0);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow:0 0 50px rgba(180,100,255,0.6);
+      margin-bottom:12px;
+    }
+    .subtitle { font-size:1.25rem; opacity:0.8; max-width:700px; margin:0 auto; }
+
+    /* Повернення на головну */
+    .back-btn {
+      position: absolute;
+      top: 25px;
+      left: 30px;
+      padding: 12px 24px;
+      background: rgba(100,160,255,0.25);
+      border: 1px solid rgba(100,160,255,0.4);
+      border-radius: 50px;
+      color: #a0d8ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+    .back-btn:hover {
+      background: rgba(100,160,255,0.45);
+      transform: translateX(-6px);
+      box-shadow: 0 8px 25px rgba(80,140,255,0.4);
+    }
+
+    .section { padding:50px 20px; }
+    .section h2 { text-align:center; font-size:2.8rem; margin-bottom:50px; color:#d0a0ff; }
+
+    .container {
+      max-width:1280px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));
+      gap:28px;
+    }
+
+    .blackhole-card {
+      background:rgba(20,10,40,0.7);
+      backdrop-filter:blur(12px);
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(200,100,255,0.3);
+      transition:all 0.4s ease;
+      cursor:pointer;
+      transform:translateY(25px);
+      opacity:0;
+    }
+    .blackhole-card.appear { transform:translateY(0); opacity:1; }
+    .blackhole-card:hover {
+      transform:translateY(-12px) scale(1.04);
+      box-shadow:0 30px 70px rgba(0,0,0,0.7), 0 0 60px rgba(180,100,255,0.35);
+    }
+
+    .img-container {
+      height:220px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .img-container::after {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to bottom, transparent 25%, rgba(0,0,0,0.8) 100%);
+    }
+
+    .content { padding:24px 26px; }
+    h3 { font-size:2rem; margin-bottom:12px; color:#e8d0ff; }
+    .type { font-size:1.05rem; opacity:0.75; margin-bottom:16px; font-style:italic; }
+    p { line-height:1.6; font-size:1.05rem; opacity:0.92; }
+    .extra { margin-top:14px; font-size:1rem; opacity:0.88; }
+
+    /* Модалка */
+    .modal {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.96);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .modal-content {
+      max-width:1150px;
+      width:100%;
+      border-radius:16px;
+      overflow:hidden;
+      position:relative;
+      max-height:90vh;
+      overflow-y:auto;
+      background:rgba(20,10,35,0.94);
+      border:1px solid rgba(200,120,255,0.4);
+    }
+    .modal-img {
+      width:100%;
+      height:380px;
+      background-size:cover;
+      background-position:center;
+    }
+    .modal-body { padding:32px 36px; }
+    .close {
+      position:absolute;
+      top:20px;
+      right:30px;
+      font-size:2.8rem;
+      color:#fff;
+      cursor:pointer;
+      opacity:0.8;
+    }
+    .close:hover { opacity:1; transform:scale(1.2); }
+
+    @media (max-width:768px) {
+      h1 { font-size:2.9rem; }
+      .modal-img { height:260px; }
+      .modal-body { padding:24px; }
+      .back-btn { top:15px; left:15px; padding:10px 18px; font-size:0.95rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+
+<a href="index.html" class="back-btn">← Назад до Сонячної системи</a>
+
+<header>
+  <h1>Чорні діри</h1>
+  <div class="subtitle">Об'єкти, що викривлюють простір-час настільки сильно, що навіть світло не може вирватись</div>
+</header>
+
+<div class="section">
+  <div class="container blackholes">
+    <div class="blackhole-card" data-bh="stellar">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/0/03/Black_hole_lensing_web.gif');"></div>
+      <div class="content">
+        <h3>Стеларні чорні діри</h3>
+        <div class="type">Утворюються після смерті масивних зірок</div>
+        <p>Маса від ~3 до 100–150 мас Сонця. Виникають після вибуху наднової типу II або колапсу ядра.</p>
+        <div class="extra">Більшість виявлених — у подвійних системах через акрецію з компаньйона.</div>
+      </div>
+    </div>
+
+    <div class="blackhole-card" data-bh="intermediate">
+      <div class="img-container" style="background-image:url('https://news.blog.net.ua/media/2025/07/Nevlovyma-promizhna-chorna-dira-pozhyraie-zirku-rozkryvaiuchy-taiemnytsi-kosmichnoi-evoliutsii.gif');"></div>
+      <div class="content">
+        <h3>Проміжні чорні діри</h3>
+        <div class="type">Маса від сотень до ~100 000 мас Сонця</div>
+        <p>Можливо утворюються при злитті зірок у щільних скупченнях або в ранньому Всесвіті.</p>
+        <div class="extra">Довгий час вважалися «втраченою ланкою», зараз є кандидати (наприклад, у зоряних скупченнях).</div>
+      </div>
+    </div>
+
+    <div class="blackhole-card" data-bh="supermassive">
+      <div class="img-container" style="background-image:url('https://racurs.ua/content/images/Publication/News/11/46/08/content/tumblr_inline_pijtzy7ndk1tzhl5u_540.gif');"></div>
+      <div class="content">
+        <h3>Надмасивні чорні діри</h3>
+        <div class="type">Маса від мільйонів до десятків мільярдів мас Сонця</div>
+        <p>Знаходяться в центрах майже всіх великих галактик, включаючи нашу (Стрілець A*).</p>
+        <div class="extra">Як вони виросли до таких розмірів — досі одна з найбільших загадок астрофізики.</div>
+      </div>
+    </div>
+
+    <div class="blackhole-card" data-bh="m87">
+      <div class="img-container" style="background-image:url('https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyemJ2OG0xaDR0Nml2ZWE5ZmhucG5xYWh4NTF4aXVxbWdpa3hkMW53biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/gdTSwfMfdqeLv6lw6w/giphy-downsized-medium.gif');"></div>
+      <div class="content">
+        <h3>M87* — перша «сфотографована»</h3>
+        <div class="type">Надмасивна чорна діра в галактиці M87</div>
+        <p>Маса ≈ 6.5 мільярдів мас Сонця. Перше зображення тіні чорної діри (Event Horizon Telescope, 2019).</p>
+        <div class="extra">Діаметр горизонту подій ~38 млрд км — приблизно розмір орбіти Нептуна.</div>
+      </div>
+    </div>
+
+    <div class="blackhole-card" data-bh="sgr-a">
+      <div class="img-container" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/15/Sag_A%2A.jpg');"></div>
+      <div class="content">
+        <h3>Стрілець A* (Sgr A*)</h3>
+        <div class="type">Надмасивна чорна діра в центрі Чумацького Шляху</div>
+        <p>Маса ≈ 4.3 мільйона мас Сонця. Друга чорна діра, зображена EHT (2022).</p>
+        <div class="extra">Знаходиться на відстані ~27 000 світлових років від нас.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка -->
+<div class="modal" id="bhModal">
+  <div class="modal-content">
+    <span class="close" id="closeBh">×</span>
+    <div class="modal-img" id="bhImg"></div>
+    <div class="modal-body">
+      <h2 id="bhTitle"></h2>
+      <div class="type" id="bhType"></div>
+      <p id="bhDesc"></p>
+      <div class="extra" id="bhExtra"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Анімація появи карток
+document.querySelectorAll('.blackhole-card').forEach((card, i) => {
+  setTimeout(() => card.classList.add('appear'), 300 + i * 180);
+});
+
+// Розширені описи
+const bhDetails = {
+  stellar: {
+    title: "Стеларні чорні діри",
+    type: "Чорні діри зоряної маси",
+    desc: "Утворюються, коли масивна зірка (зазвичай > 20–25 мас Сонця) вичерпує паливо, ядро колапсує під власною гравітацією. Якщо залишкова маса ядра > ~3 мас Сонця — зірка не може утриматися навіть нейтронним виродженням і стає чорною дірою. Горизонт подій має радіус від кількох до кількох десятків кілометрів.",
+    extra: "• Найпоширеніший тип серед виявлених чорних дір\n• Часто виявляються через рентгенівське випромінювання від акреційного диска\n• Приклади: Cygnus X-1 (~15 M☉), V616 Mon (~10–20 M☉)\n• Можуть зливатися між собою — джерело гравітаційних хвиль (LIGO/Virgo)"
+  },
+  intermediate: {
+    title: "Проміжні чорні діри",
+    type: "Маса 100–100 000 M☉",
+    desc: "Існування довгий час було гіпотетичним. Зараз є кілька сильних кандидатів: у щільних зоряних скупченнях (наприклад, HLX-1), у карликових галактиках або внаслідок злиттів стеларних чорних дір. Можливо, є «насінням» для надмасивних.",
+    extra: "• Маса заповнює прогалину між стеларними та надмасивними\n• Можуть утворюватися при прямому колапсі масивних газових хмар у ранньому Всесвіті\n• Приклади кандидатів: 3XMM J215022.4−055108 (~50 000 M☉)"
+  },
+  supermassive: {
+    title: "Надмасивні чорні діри",
+    type: "Центральні чорні діри галактик",
+    desc: "Маса від 10⁵ до понад 10¹⁰ мас Сонця. Знаходяться в центрах більшості галактик. Активні ядра галактик (квазари, сейфертівські галактики) — це надмасивні чорні діри, що активно акреціюють речовину.",
+    extra: "• TON 618 — одна з наймасивніших (~66 млрд M☉)\n• Як вони виросли так швидко після Великого Вибуху — відкрите питання\n• Впливають на еволюцію галактик через зворотний зв'язок (джети, вітри)"
+  },
+  m87: {
+    title: "M87*",
+    type: "Перша чорна діра, зображена людством",
+    desc: "Надмасивна чорна діра в центрі еліптичної галактики M87 (сузір'я Діви). Маса ≈ 6.5 млрд мас Сонця. Зображення отримано глобальною мережею Event Horizon Telescope у 2019 році — перше пряме візуальне підтвердження існування горизонту подій.",
+    extra: "• Відстань від нас ~55 млн світлових років\n• Діаметр тіні ~42 млрд км (приблизно 280 а.о.)\n• Потужний релятивістський джет довжиною тисячі світлових років"
+  },
+  "sgr-a": {
+    title: "Стрілець A* (Sgr A*)",
+    type: "Чорна діра в центрі нашої галактики",
+    desc: "Надмасивна чорна діра в центрі Чумацького Шляху. Маса ≈ 4.3 млн мас Сонця. Дуже «тиха» — акреція відбувається повільно. Зображена Event Horizon Telescope у 2022 році.",
+    extra: "• Відстань від Сонця ~26 000–27 000 світлових років\n• Період обертання зірок навколо неї використовується для визначення маси\n• Діаметр тіні ~51 млн км (~0.34 а.о.)"
+  }
+};
+
+document.querySelectorAll('.blackhole-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const key = card.dataset.bh;
+    const detail = bhDetails[key];
+
+    const img = card.querySelector('.img-container').style.backgroundImage.slice(5,-2);
+
+    document.getElementById('bhImg').style.backgroundImage = `url('${img}')`;
+    document.getElementById('bhTitle').textContent = detail.title;
+    document.getElementById('bhType').textContent = detail.type;
+    document.getElementById('bhDesc').textContent = detail.desc;
+    document.getElementById('bhExtra').textContent = detail.extra;
+
+    document.getElementById('bhModal').style.display = 'flex';
+  });
+});
+
+document.getElementById('closeBh').addEventListener('click', () => {
+  document.getElementById('bhModal').style.display = 'none';
+});
+document.getElementById('bhModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('bhModal')) {
+    document.getElementById('bhModal').style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>
