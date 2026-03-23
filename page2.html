@@ -81,7 +81,7 @@
     .section h2 { text-align:center; font-size:2.8rem; margin-bottom:40px; color:#a0d8ff; }
     .content-text {
       max-width: 900px;
-      margin: 0 auto 60px;
+      margin: 0 auto 40px;
       font-size: 1.15rem;
       line-height: 1.7;
       opacity: 0.92;
@@ -89,7 +89,7 @@
     }
     .video-container {
       max-width: 960px;
-      margin: 0 auto 60px;
+      margin: 0 auto 50px;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(0, 140, 255, 0.3);
@@ -100,23 +100,69 @@
       height: 540px;
       border: none;
     }
+    .audio-section {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      background: rgba(10, 20, 50, 0.6);
+      padding: 25px;
+      border-radius: 16px;
+      border: 1px solid rgba(80, 160, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .audio-item {
+      margin-bottom: 50px;
+    }
+    .audio-item:last-child { margin-bottom: 0; }
+    .audio-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+    button.audio-btn {
+      padding: 14px 32px;
+      font-size: 1.15rem;
+      background: linear-gradient(135deg, #0066cc, #003366);
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 100, 255, 0.3);
+    }
+    button.audio-btn:hover {
+      background: linear-gradient(135deg, #0088ff, #0055cc);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 120, 255, 0.5);
+    }
+    button.audio-btn:active {
+      transform: translateY(1px);
+    }
+    audio {
+      width: 100%;
+      margin-top: 15px;
+      filter: brightness(1.15) contrast(1.1);
+    }
     .back-link {
       display: block;
       text-align: center;
-      margin: 40px auto;
+      margin: 50px auto;
       font-size: 1.3rem;
       color: #80d0ff;
       text-decoration: none;
       transition: all 0.3s;
     }
     .back-link:hover {
-      color: #fff;
-      transform: scale(1.05);
+      color: #ffffff;
+      transform: scale(1.08);
     }
     @media (max-width:800px) {
       .video-container iframe { height: 360px; }
       h1 { font-size:2.8rem; }
       .tabs { flex-direction:column; gap:16px; }
+      .audio-section { padding: 20px; }
     }
   </style>
 </head>
@@ -125,7 +171,7 @@
 
 <header>
   <h1>Звуки космосу</h1>
-  <div class="subtitle">Що "чує" людство з глибин Всесвіту</div>
+  <div class="subtitle">Що «чує» людство з глибин Всесвіту</div>
 </header>
 
 <div class="tabs">
@@ -135,10 +181,10 @@
 </div>
 
 <div class="section">
-  <h2>Вчені "записали" звуки з космосу</h2>
+  <h2>Вчені перетворили космічні хвилі на звук</h2>
   
   <div class="content-text">
-    У космосі немає повітря, тому звичайного звуку там не буває. Але вчені перетворюють радіохвилі, плазмові коливання та рентгенівські дані на звук (це називається соніфікація). Ось найвідоміші приклади — моторошні "голоси" чорних дір і міжзоряного простору.
+    У космосі немає повітря, тому звуку в звичному розумінні там не існує. Але вчені використовують <strong>соніфікацію</strong> — перетворюють радіохвилі, плазмові коливання та рентгенівські дані на звук, який ми можемо почути. Ось найвідоміші та наймоторошніші приклади.
   </div>
 
   <div class="video-container">
@@ -148,8 +194,34 @@
             allowfullscreen></iframe>
   </div>
 
-  <div class="content-text" style="margin-top: -20px; margin-bottom: 80px;">
-    <strong>Звук надмасивної чорної діри</strong> (скупчення Персея, 250 млн світлових років). NASA перетворила хвилі тиску в гарячому газі на звук. Оригінальна нота — на 57 октав нижче середнього До, тому її підняли до чутного діапазону. Результат — дуже моторошний гул...
+  <div class="audio-section">
+    <div class="audio-item">
+      <h3 style="text-align:center; color:#80d0ff; margin-bottom:15px;">Звук надмасивної чорної діри (скупчення Персея)</h3>
+      <p class="content-text" style="margin:0 0 20px 0;">
+        Хвилі тиску в гарячому газі перетворені на звук. Оригінальна частота — на 57–58 октав нижче, ніж чує людина. Дуже низький, моторошний гул...
+      </p>
+      <div class="audio-controls">
+        <button class="audio-btn" onclick="playPauseAudio('audio-perseus')">Відтворити / Пауза</button>
+      </div>
+      <audio id="audio-perseus" controls>
+        <source src="https://assets.science.nasa.gov/dynamicimage/assets/science/missions/chandra/multimedia/sonifications/perseus-sonification.mp3?w=1600&h=900&fit=clip&crop=faces%2Cfocalpoint" type="audio/mpeg">
+        Ваш браузер не підтримує аудіо елемент.
+      </audio>
+    </div>
+
+    <div class="audio-item">
+      <h3 style="text-align:center; color:#80d0ff; margin-bottom:15px;">Звуки міжзоряного простору (Voyager 1)</h3>
+      <p class="content-text" style="margin:0 0 20px 0;">
+        Плазмові хвилі в щільному міжзоряному газі за межами Сонячної системи. Запис 2012–2013 років — шепіт космічного «вітру».
+      </p>
+      <div class="audio-controls">
+        <button class="audio-btn" onclick="playPauseAudio('audio-voyager')">Відтворити / Пауза</button>
+      </div>
+      <audio id="audio-voyager" controls>
+        <source src="https://space.physics.uiowa.edu/voyager/V1PWS_Interstellar_2012-2013.mp3" type="audio/mpeg">
+        Ваш браузер не підтримує аудіо елемент.
+      </audio>
+    </div>
   </div>
 
   <div class="video-container">
@@ -159,12 +231,25 @@
             allowfullscreen></iframe>
   </div>
 
-  <div class="content-text" style="margin-top: -20px;">
-    <strong>Звуки міжзоряного простору</strong> (записано Voyager 1). Плазмові хвилі в щільному міжзоряному газі — це "шум" космосу за межами Сонячної системи. Дуже атмосферно й трохи лякаюче.
-  </div>
-
   <a href="index.html" class="back-link">← Повернутися до планет</a>
 </div>
+
+<script>
+  function playPauseAudio(id) {
+    const audio = document.getElementById(id);
+    if (audio.paused) {
+      // Зупиняємо інші аудіо, щоб не накладалися
+      document.querySelectorAll('audio').forEach(a => {
+        if (a !== audio) a.pause();
+      });
+      audio.play().catch(() => {
+        alert('Браузер заблокував автовідтворення. Натисніть ще раз або скористайтеся контролерами нижче.');
+      });
+    } else {
+      audio.pause();
+    }
+  }
+</script>
 
 </body>
 </html>
